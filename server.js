@@ -1,7 +1,9 @@
 // Import modules.
 var http = require('http');
 var express = require('express'), app = express();
-var server = http.createServer(app).listen(3000);
+
+var port = process.env.PORT || 3000;
+var server = http.createServer(app).listen(port);
 var jade = require('jade');
 var io = require('socket.io').listen(server);
 
