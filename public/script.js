@@ -33,16 +33,24 @@ socket.on('message', function(data) {
 
 $(function() {
     $("#chatControls").hide();
-    $("#pseudoSet").click(function() {setPseudo()});
-	
+	var setPseudoButton = $("#pseudoSet");
+    setPseudoButton.click(function() {setPseudo()});
+	$('#pseudoInput').keypress(function (event)
+	{
+		if (event.which == 13)
+		{
+			setPseudoButton.click();
+		}
+	});
 	
 	var sendMessageButton = $("#submit");
     sendMessageButton.click(function() {sentMessage();});
-	
 	$("#takeTurn").click(function() {takeTurn();});
 	
-	 $('#messageInput').keypress(function (event)
-	 {
+	
+	// TODO: Make this nicer.
+	$('#messageInput').keypress(function (event)
+	{
 		if (event.which == 13)
 		{
 			sendMessageButton.click();
