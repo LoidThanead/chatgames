@@ -34,6 +34,18 @@ socket.on('message', function(data) {
 $(function() {
     $("#chatControls").hide();
     $("#pseudoSet").click(function() {setPseudo()});
-    $("#submit").click(function() {sentMessage();});
+	
+	
+	var sendMessageButton = $("#submit");
+    sendMessageButton.click(function() {sentMessage();});
+	
 	$("#takeTurn").click(function() {takeTurn();});
+	
+	 $('#messageInput').keypress(function (event)
+	 {
+		if (event.which == 13)
+		{
+			sendMessageButton.click();
+		}
+	});
 });
