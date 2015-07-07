@@ -57,7 +57,7 @@ io.sockets.on('connection', function(socket)
 		var message = game.takeTurn(socket.pseudo);
 		var data = { 'message' : message, pseudo : socket.pseudo };
 		//socket.broadcast.emit('message', data);
-		socket.emit('message', data);
+		io.sockets.emit('message', data);
 		console.log("user " + socket.pseudo + " rolled the die");
 	});
 });
