@@ -38,7 +38,6 @@ function ChatGame()
 		},
 		{ // 1
 			descriptor : this.clothes,
-			//dieSize : this.clothesOptions.length
 			options : this.clothesOptions
 		},
 		{ // 2
@@ -47,7 +46,6 @@ function ChatGame()
 		},
 		{ // 3
 			descriptor : this.race,
-			//dieSize : this.raceOptions.length
 			options : this.raceOptions
 		},
 		{ // 4
