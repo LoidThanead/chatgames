@@ -1,59 +1,80 @@
+var takeTurnShortCut = 'ctrl+q';
+
 var socket = io.connect();
 
-function addMessage(msg, pseudo) {
-    $("#chatEntries").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
+function addMessage(msg, pseudo)
+{
+    $('#chatEntries').append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
 }
 
-function sentMessage() {
-    if ($('#messageInput').val() != "") 
+function sendMessage()
+{
+	var message = $('#messageInput').val();
+    if (message != "") 
     {
-        socket.emit('message', $('#messageInput').val());
-        addMessage($('#messageInput').val(), "Me", new Date().toISOString(), true);
+        socket.emit('message', message);
+		var now = new Date().toISOString();
+        addMessage(message, "Me", now, true);
         $('#messageInput').val('');
     }
 }
 
-function setPseudo() {
-    if ($("#pseudoInput").val() != "")
+function setPseudo()
+{
+	var pseudonym = $("#pseudoInput").val();
+    if (pseudonym != "")
     {
-        socket.emit('setPseudo', $("#pseudoInput").val());
-        $('#chatControls').show();
-        $('#pseudoInput').hide();
-        $('#pseudoSet').hide();
+		// Send the chosen pseudonym to the server.
+        socket.emit('setPseudo', pseudonym);
+		
+		// Hide pseudonym settings.
+        $("#pseudoInput").hide();
+        $("#pseudoSet").hide();
+		
+		// Show chat controls.
+        $("#chatControls").show();
+		
+		// Set focus to the message input field.
+		$('#messageInput').focus();
     }
 }
 
-function takeTurn() {
+function takeTurn()
+{
 	socket.emit('taketurn');
 }
 
-socket.on('message', function(data) {
+// Receives messages from the server.
+socket.on('message', function(data)
+{
     addMessage(data['message'], data['pseudo']);
 });
 
-$(function() {
-    $("#chatControls").hide();
-	var setPseudoButton = $("#pseudoSet");
-    setPseudoButton.click(function() {setPseudo()});
-	$('#pseudoInput').keypress(function (event)
-	{
-		if (event.which == 13)
-		{
-			setPseudoButton.click();
-		}
-	});
-	
+$(function()
+{	
+	var pseudoInput = $("#pseudoInput");
+	var setPseudoButton = $('#pseudoSet');
+	var messageInput = $('#messageInput');
 	var sendMessageButton = $("#submit");
-    sendMessageButton.click(function() {sentMessage();});
-	$("#takeTurn").click(function() {takeTurn();});
+	var takeTurnButton = $("#takeTurn");
+
+	var chatEntries = $("#chatEntries");
+	var chatControls = $('#chatControls');
 	
+    chatControls.hide();
 	
-	// TODO: Make this nicer.
-	$('#messageInput').keypress(function (event)
-	{
-		if (event.which == 13)
-		{
-			sendMessageButton.click();
-		}
-	});
+	// Set pseudo when clicking 'set pseudo' or pressing enter in the input field.
+	pseudoInput.bind('keydown', 'return', setPseudo);
+    setPseudoButton.click(setPseudo);
+	
+	// Send message when clicking 'send' or pressing enter in the input field.
+    sendMessageButton.click(sendMessage);
+	messageInput.bind('keydown', 'return', sendMessage);
+	
+	// Send 'roll die' action when clicking the button or when pressing the hotkeys.
+	takeTurnButton.click(takeTurn);
+	$(document).bind('keydown', takeTurnShortCut, takeTurn);
+	
+	// Set focus to the 'pseudo' field on startup.
+	pseudoInput.focus();
 });
